@@ -1,0 +1,27 @@
+{
+  "name": "sbwn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpeckyYT/SBWN.git"
+  },
+  "author": "SpeckyYT",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SpeckyYT/SBWN/issues"
+  },
+  "homepage": "https://github.com/SpeckyYT/SBWN#readme",
+  "dependencies": {
+    "ansi-regex": "^6.0.0",
+    "discord-command-parser": "^1.5.3",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "filehound": "^1.17.4",
+    "node-cron": "^3.0.0"
+  }
+}
