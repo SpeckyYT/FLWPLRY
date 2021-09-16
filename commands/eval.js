@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const child_process = require('child_process');
+const pidusage = require('util').promisify(require('pidusage'));
 
 const SPWN_FOLDER = path.join(process.cwd(),'SPWN');
 if(!fs.existsSync(SPWN_FOLDER)) fs.mkdirSync(SPWN_FOLDER);
@@ -29,24 +30,38 @@ module.exports = {
 
             const child = child_process.spawn(cmd, args, {
                 stdio: 'overlapped',
-                timeout: 1*60*1000,
             });
 
-            const int = setInterval(async () => {
+            const kill = async (code = 0) => {
+                clearTimeout(timeout);
+                clearInterval(contentInt);
+                clearInterval(memoryInt);
+                child.kill(0);
+                child.removeAllListeners();
+                deleteFile(file);
+                await message.edit(await codeBlock(`${content}\nExited with code "${code}"`, lang, true));
+            }
+
+            const contentInt = setInterval(async () => {
                 if(content != prevContent){
                     prevContent = content;
                     await message.edit(await codeBlock(content,lang))
                 }
             }, 1250);
+            const memoryInt = setInterval(async () => {
+                const data = await pidusage(child.pid).catch(()=>({}));
+                if(data.memory > process.env.MAX_MEMORY*(2**10)**2){
+                    kill("Memory overflow");
+                }
+            }, 250);
+            const timeout = setTimeout(() => {
+                kill("Timeout");
+            }, process.env.MAX_TIME*1000)
 
-            const stds = ['stdout','stderr'];
-            for(const std of stds) child[std].on('data', res => content += res.toString());
-            child.on('close', async (code) => {
-                clearInterval(int);
-                deleteFile(file);
-                code = typeof code == 'number' ? code : '*timeout*'
-                await message.edit(await codeBlock(content + `\nExited with code ${code}`, lang, true));
-            })
+            for(const std of ['stdout','stderr'])
+                child[std].on('data', res => content += `${res}`);
+
+            child.on('close', (code) => kill(code))
         }catch(err){
             deleteFile(file);
             throw err
