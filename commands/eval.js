@@ -16,11 +16,11 @@ module.exports = {
 
         try{
             await fs.promises.writeFile(file,code);
-            const command = ['spwn','b',file,'-c'];
+            const command = ['spwn','build',file,'-l'];
 
             const lang = 'rs';
 
-            let content = `Run [${command.map((v,i) => i == 2 ? `"${filename}"` : v).join(' ')}]\n`;
+            let content = `Run [${command.join(' ')}]\n`;
             let prevContent = content;
 
             const message = await msg.reply(await codeBlock(content,lang));
@@ -45,7 +45,7 @@ module.exports = {
                 clearInterval(int);
                 deleteFile(file);
                 code = typeof code == 'number' ? code : '*timeout*'
-                await message.edit(await codeBlock(content + `\nExited with code ${code}`, lang));
+                await message.edit(await codeBlock(content + `\nExited with code ${code}`, lang, true));
             })
         }catch(err){
             deleteFile(file);
@@ -66,9 +66,28 @@ function randomFileName(){
     return file + '.spwn';
 }
 
-const codeBlock = async (string='null',language='') => {
+const codeBlock = async (string='null',language,done=false) => {
     const ansi = await import('ansi-regex');
-    const MAX_LENGTH = 1900
-    if(string.length > 1900) string = string.slice(0,MAX_LENGTH) + '...';
-    return `\`\`\`${language||''}\n${(string||'').replace(ansi.default(),'')}\n\`\`\``;
+
+    const MAX_LENGTH = 1800;
+    const MAX_NEWLINES = 20;
+    const SPLITTER = '———————————————————————————\n';
+    const SLICER = '...\n';
+
+    string = string
+    .replace(ansi.default(),'')
+    .replaceAll(SPWN_FOLDER,'.')
+
+    const groups = string.split(SPLITTER);
+    if(groups.length > 1){
+        groups.splice(1,0,groups.splice(1,groups.length-(done ? 2 : 1)).join(SPLITTER));
+
+        if(groups[1].length > MAX_LENGTH)
+            groups[1] = groups[1].slice(0,MAX_LENGTH) + SLICER;
+
+        const lines = groups[1].split('\n')
+        if(lines.length > MAX_NEWLINES)
+            groups[1] = lines.slice(0,MAX_NEWLINES).join('\n') + SLICER;
+    }
+    return `\`\`\`${language}\n${groups.join(SPLITTER)}\n\`\`\``;
 }
