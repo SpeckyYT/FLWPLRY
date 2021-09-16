@@ -10,14 +10,14 @@ module.exports = {
     async run(bot,msg,ctx){
         if(!ctx.body) return msg.reply('No SPWN code provided');
         const code = ctx.arguments.join(' ');
-        
+
         const filename = randomFileName();
         const file = path.join(SPWN_FOLDER,filename);
 
         try{
             await fs.promises.writeFile(file,code);
             const command = ['spwn','b',file,'-c'];
-            
+
             const lang = 'rs';
 
             let content = `Run [${command.map((v,i) => i == 2 ? `"${filename}"` : v).join(' ')}]\n`;
@@ -38,7 +38,7 @@ module.exports = {
                     await message.edit(await codeBlock(content,lang))
                 }
             }, 1250);
-            
+
             const stds = ['stdout','stderr'];
             for(const std of stds) child[std].on('data', res => content += res.toString());
             child.on('close', async (code) => {

@@ -33,7 +33,7 @@ for(const file of files){
         data.triggers = Array.isArray(data.triggers) ? data.triggers : [data.triggers];
 
         if(!isTrigger(data.triggers)) throw 'Trigger invalid';
-        
+
         for(const trig of data.triggers)
             bot.commands.set(trig,data.run||(()=>{}))
 
