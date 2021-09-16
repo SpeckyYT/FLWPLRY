@@ -60,9 +60,10 @@ function deleteFile(filePath){
 
 function randomFileName(){
     const BASE = 36;
+    const LENGTH = 16;
     const string = () => Math.floor(Math.random()*BASE).toString(BASE);
     let file = '';
-    for(let i = 0; i < 16; i++) file += string();
+    for(let i = 0; i < LENGTH; i++) file += string();
     return file + '.spwn';
 }
 
