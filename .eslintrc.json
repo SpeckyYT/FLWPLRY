@@ -1,0 +1,60 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "script"
+    },
+    "rules": {
+        "indent": [
+            "warn",
+            4,
+            {
+                "MemberExpression": 0,
+                "SwitchCase": 1,
+                "VariableDeclarator": 1,
+                "ObjectExpression": 1,
+                "flatTernaryExpressions": false,
+                "ArrayExpression": 1
+            }
+        ],
+        "no-unused-vars": [
+            "warn",
+            {
+                "args": "none"
+            }
+        ],
+        "linebreak-style":[
+            "error",
+            "windows"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "arrow-parens":"off",
+        "brace-style": "warn",
+        "no-async-promise-executor":"off",
+        "no-case-declarations":"off",
+        "no-cond-assign":"error",
+        "no-console": "off",
+        "no-constant-condition":"off",
+        "no-continue":"off",
+        "no-control-regex":"off",
+        "no-empty":"off",
+        "no-inner-declarations":"off",
+        "no-irregular-whitespace":"off",
+        "no-prototype-builtins":"off",
+        "no-self-assign":"off",
+        "no-tabs":"error",
+        "no-trailing-spaces":"error",
+        "no-unreachable":"off",
+        "no-var": "error",
+        "prefer-const": "off",
+        "spaced-comment":"warn",
+        "yoda": "error"
+    }
+}
