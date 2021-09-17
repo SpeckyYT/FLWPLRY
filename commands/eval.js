@@ -29,7 +29,7 @@ module.exports = {
             const [cmd,...args] = command;
 
             const child = child_process.spawn(cmd, args, {
-                stdio: 'overlapped',
+                stdio: 'pipe',
             });
 
             const kill = async (code = 0) => {
